@@ -71,3 +71,68 @@ typeof researcher === "string" ? researcher.toUpperCase() : researcher.toFixed()
 // ====================================================================================================
 
 // 3.3 리터럴 타입
+// 리터럴 타입은 좀 더 구체적인 버전의 원시타입이다.
+const philosopher = "Hypatia";
+// philosopher는 어떤 타입일까?
+// 얼핏봐도 string 타입이라고 말할 수 있고, 실제로도 string 타입이다.
+// 하지만 philosopher는 단지 string 타입이 아닌 "Hypatia"라는 특별한 값이다.
+// 따라서 변수 philosopher의 타입은 기술적으로 더 구체적인 "Hypatia"이다.
+
+// 이것이 리터럴 타입의 개념이다.
+// 원시 타입 값 중 어떤 것이 아닌 '특정 원싯값'으로 알려진 타입이 리터럴 타입이다.
+// 만약 변수를 const로 선언하고 직접 리터럴 값을 할당하면 타입스크립트는 해당 변수를 할당된 리터럴 값으로 유추한다.
+// 유니언 타입 애너테이션에서는 리터럴과 원시타입을 섞어서 사용할 수 있다.
+let lifesapn: number | "ongoing" | "uncertain";
+
+lifesapn = 89; // OK
+lifesapn = "ongoing"; // OK
+lifesapn = true; // Error: 'true' 형식은 'number | "ongoing" | "uncertain"' 형식에 할당할 수 없다.
+
+let specificallyAda: "Ada";
+specificallyAda = "Ada"; // OK
+specificallyAda = "Byron"; // Error: '"Byron"' 형식은 '"Ada"' 형식에 할당할 수 없다. 리터럴 타입 위반
+
+let something = ""; // 타입 string
+specificallyAda = something; // Error: 'string' 형식은 '"Ada"' 형식에 할당할 수 없다.
+// 리터럴 타입은 그 값이 해당하는 원시 타입에 할당할 수 있다.
+// 모든 특정 리터럴 문자열은 여전히 string 타입이기 때문이다.
+something = specificallyAda; // OK
+
+// ====================================================================================================
+
+// 3.4 엄격한 null 검사
+// 리터럴로 좁혠 유니언의 힘은 타입스크립트에서 '엄격한 null 검사'라 부르는 타입 시스템 영역인 '잠재적으로 정의되지 안은 undefined 값'으로 작업할 때 특히 두드러진다.
+
+// 3.4.3 초깃값이 없는 변수
+// 자바스크립트에서 초깃값이 없는 변수는 기본적으로 undefined가 된다. 이는 타입 시스템에서 극단적인 경우를 나타내기도 한다.
+// 만일 undefined를 포함하지 않는 타입으로 변수를 선언한 다음, 값을 할당하기 전에 사용하려고 시도하면 어떻게 될까?
+
+// 타입스크립트는 값이 할당될 때까지 변수가 undefined임을 이해할 만큼 충분히 영리하다.
+// 값이 할당되기 전에 속성 중 접근하려는 것처럼 해당 변수를 사용하려고 시도하면 다음과 같은 오류 메시지가 나타난다.
+let mathematician2: string;
+mathematician2?.length; // 'mathematician2' 변수가 할당되기 전에 사용되었다.
+
+mathematician2 = "Mark Goldberg";
+mathematician2.length; // OK
+
+// 변수 타입에 undefined가 포함되어 있는 경우에는 오류가 보고되지 않는다.
+// 변수 타입에 | undefined를 추가하면, undefined는 유효한 타입이기 때문에 사용 전에는 정의할 필요가 없음을 타입스크립트에서 나타낸다.
+let mathematician3: string | undefined;
+
+mathematician3?.length; // OK
+mathematician3 = "Mark Goldberg";
+mathematician3.length; // OK
+
+// ====================================================================================================
+
+// 3.5 타입 별칭
+// 타입스크립트에는 재사용하는 타입에 더 쉬운 이름을 할당하는 타입 별칭(type alias)이 있다.
+// 타입 별칭은 "type 새로운 이름 = 타입" 형태를 갖는다.
+// 편의상 타입 별칭은 파스칼케이스(PascalCase)로 이름을 짓는다.
+
+// 타입 별칭은 순전히 타입 시스템에만 존재하므로 런타임 코드에서는 참조할 수 없다.
+// 타입스크립트는 런타임에 존재하지 않는 항목에 접근하려고 하면 타입 오류로 알려준다.
+// 다시 말하지만, 타입 별칭은 순전히 "개발 시"에만 존재한다.
+
+type SomeType = string | undefined;
+console.log(SomeType); // Error: 'SomeType'은(는) 형식만 참조하지만, 여기서는 값으로 사용되고 있습니다.
