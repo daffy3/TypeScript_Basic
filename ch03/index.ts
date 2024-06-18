@@ -136,3 +136,11 @@ mathematician3.length; // OK
 
 type SomeType = string | undefined;
 console.log(SomeType); // Error: 'SomeType'은(는) 형식만 참조하지만, 여기서는 값으로 사용되고 있습니다.
+
+// 3.5.2 타입 별칭 결합
+// 타입 별칭은 다른 타입 별칭을 참조할 수 있다.
+// 유니언 타입인 타입 별칭 내에 또 다른 유니언 타입인 타입 별칭을 포함하고 있다면, 다른 타입 별칭을 참조하는 것이 유용하다.
+// IdMaybe 타입은 undefined와 null, 그리고 Id 내의 타입을 포함한 유니언 타입이다.
+// 작성순서는 상관 없다.
+type Id = number | string;
+type IdMaybe = Id | undefined | null; // IdMaybe 타입은 다음과 같다: number | string | undefined | null
