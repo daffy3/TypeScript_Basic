@@ -26,7 +26,7 @@
 // - 컴파일러: 타입 검사기를 실행하고 문제를 보고한 후 이에 대응되는 자바스크립트 코드를 생성하는 프로그램
 // - 언어 서비스: 타입 검사기를 사용해 VS Code와 같은 편집기에 개발자에게 유용한 유틸리티 제공법을 알려주는 프로그램
 
-// console.blub("Nothing is worth more than laughter.");
+console.blub("Nothing is worth more than laughter.");
 
 // 위 코드 오류: Property 'blub' does not exist on type 'Console'.
 // 실제로 blub은 console에 존재하지 않는다.
