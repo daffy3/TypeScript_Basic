@@ -143,3 +143,37 @@ poem2.pages; // Error: 'PoemWithRhymes' 형식에 'pages' 속성이 없다.
 // 잠재적으로 존재하지 않는 객체의 멤버에 대한 접근을 제한하면 코드의 안전을 지킬 수 있다.
 
 // ====================================================================================================
+
+// 4.4 교차 타입
+// 타입스크립트 유니언 타입은 둘 이상의 다른 타입 중 하나의 타입이 될 수 있음을 나타낸다.
+// 자바스크립트의 런타임 | 연산자가 & 연산자에 대응하는 역할을 하는 것처럼 타입스크립트에서도 & 교차타입을 사용해 여러 타입을 동시에 나타낸다.
+// 교차 타입은 일반적으로 여러 기존 객체 타입을 별칭 객체 타입으로 결합해 새로운 타입을 생성한다.
+
+type Artwork = {
+    genre: string;
+    name: string;
+};
+
+type Writing = {
+    pages: number;
+    name: string;
+};
+
+type WrittenArt = Artwork & Writing;
+
+// ====================================================================================================
+
+type ShortPoem = { author: string } & ({ kigo: string; type: "haiku" } | { meter: number; type: "villanelle" });
+
+// OK
+const morningGlory: ShortPoem = {
+    author: "Fukuda Chiyo-ni",
+    kigo: "Morning Glory",
+    type: "haiku",
+};
+
+// Error: 'meter' 속성이 '{ author: string; type: "villanelle"; }' 형식에 없지만 '{ meter: number; type: "villanelle"; }' 형식에서 필수이다.
+const oneArt: ShortPoem = {
+    author: "Elizabeth Dishop",
+    type: "villanelle",
+};
