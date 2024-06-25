@@ -122,3 +122,25 @@ logWarriors("Hello", ...warriors02);
 
 const birthYears = [1844, 1840, 1583];
 logWarriors("Born in", ...birthYears); // Error => 'number' 형식의 인수는 'string' 형식의 매개 변수에 할당될 수 없다.
+
+// ====================================================================================================
+
+// 6.4 튜플
+// 자바스크립트 배열은 이론상 어떤 크기라도 될 수 있다.
+// 하지만 때로는 튜플(tuple)이라고 하는 고정된 크기의 배열을 사용하는 것이 유용하다.
+// 튜플 배열은 각 인덱스에 알려진 특정 타입을 가지며 배열의 모든 가능한 멤버를 갖는 유니언 타입보다 더 구체적이다.
+// 튜플 타입을 선언하는 구문은 배열 리터럴처러 보이지만 요소의 값 대신 타입을 적는다.
+
+// yearAndWarrior 배열은 인덱스 0에 number 타입 값을 갖고, 인덱스 1에 string 값을 갖는 튜플 타입으로 선언되었다.
+let yearAndWarrior: [number, string];
+yearAndWarrior = [530, "Tomyris"]; // OK
+yearAndWarrior = [false, "Tomyris"]; // Error => 'boolean' 형식은 'number' 형식에 할당할 수 없다.
+
+// 6.4.1 튜플 할당 가능성
+// 타입스크립트에서 튜플 타입은 가변 길이(variable length)의 배열 타입보다 더 구체적으로 처리된다.
+// 즉, 가변 길이의 배열 타입은 튜플 타입에 할당할 수 없다는 의미이다.
+
+// 타입: (boolean | number)[]
+const pairLoose = [false, 123];
+// 위 코드에서 우리는 pairLoose 내부에 [boolean, number]가 있는 것을 볼 수 있지만,
+// 타입스크립트는 더 일반적인 (boolean | number)[] 타입으로 유추한다.
