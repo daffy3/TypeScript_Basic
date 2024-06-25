@@ -181,3 +181,16 @@ song02.forEach((song, index) => {
 });
 
 // 5.4.1 void 반환타입
+// 일부 함수는 어떤 값도 반환하지 않는다. 예를 들면 return 문이 없는 함수이거나 값을 반환하지 않는 return 문을 가진 함수일 경우이다.
+// 타입스크립트는 void 키워드를 사용하여 반환 값이 없는 함수의 반환 타입을 확인할 수 있다.
+// 반환 타입이 void인 함수는 갑슬 반환하지 않을 수 있다.
+// 다음 logSong 함수는 void를 반환하도록 선언되었으므로 값 반환을 허용하지 않는다.
+function logSong03(song: string | undefined): void {
+    if (!song) return;
+    console.log(`${song}`);
+
+    return true; // Error => 'boolean' 형식은 'void' 형식에 할당할 수 없다.
+}
+
+// 자바스크립트 함수는 실젯값이 반환되지 않으면 기본으로 모두 undefined를 반환하지만 void는 undefined와 동일하지 않다.
+// void는 함수 반환 타입이 무시된다는 것을 의미하고 undefined는 반환되는 리터럴 값이다.
