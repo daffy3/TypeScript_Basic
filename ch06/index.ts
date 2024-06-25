@@ -144,3 +144,74 @@ yearAndWarrior = [false, "Tomyris"]; // Error => 'boolean' 형식은 'number' �
 const pairLoose = [false, 123];
 // 위 코드에서 우리는 pairLoose 내부에 [boolean, number]가 있는 것을 볼 수 있지만,
 // 타입스크립트는 더 일반적인 (boolean | number)[] 타입으로 유추한다.
+
+const pairTupleLoose: [boolean, number] = pairLoose;
+// '(number | boolean)[]' 형식은 '[boolean, number]' 형식에 할당할 수 없다.
+// 대상에 2개 요소가 필요하지만, 소스에 더 적게 있을 수 있다.
+
+// pairLoose가 [boolean, number] 자체로 선언된 경우 pairTupleLoose에 대한 값 할당이 허용되었을 것이다.
+// 그러나 현재는 그렇지 않고 (boolean | number)[]로 선언이 되었고,
+// 타입스크립트는 튜플 타입의 튜플에 얼마나 많은 멤버가 있는지 알고 있기 때문에 길이가 다른 튜플은 서로 할당할 수 없다.
+
+const tupleThree: [boolean, number, string] = [false, 1583, "Nzinga"];
+const tupleTwoExact: [boolean, number] = [tupleThree[0], tupleThree[1]];
+const tupleTwoExtra: [boolean, number] = tupleThree; // '[boolean, number, string]' 형식은 '[boolean, number]' 형식에 할당할 수 없다.
+// 소스에 3개 요소가 있지만, 대상에서 2개만 허용한다.
+
+// 나머지 매개변수로서의 튜플
+function logPair(name: string, value: number) {
+    console.log(`${name} has ${value}`);
+}
+const pairArray = ["Amage", 1];
+logPair(...pairArray); // 스프레드 연산자는 튜플 유형을 가지거나 나머지 매개 변수로 전달되어야 한다.
+
+const pairTupleIncorrect: [number, string] = [1, "Amage"];
+logPair(...pairTupleIncorrect); // Error => 튜플 유형이지만 'number' 형식의 인수는 'string' 형식의 매개 변수에 할당될 수 없다.
+
+const pairTupleCorrect: [string, number] = ["Amage", 1];
+logPair(...pairTupleCorrect);
+
+// 6.4.2 튜플 추론
+// 타입스크립트는 생성된 배열을 튜플이 아닌 가변 길이의 배열로 취급한다.
+// 배열이 변수의 초깃값 또는 함수에 대한 반환값으로 사용되는 경우, 고정된 크기의 튜플이 아니라 유연한 크기의 배열로 가정한다.
+
+// 다음 코드에서 반환된 배열 리터럴 기반으로 타입을 유추해보면 firstCharAndSize 함수는 [string, number]가 아니라 (string | number)[]를 반환하는 것으로 유추된다.
+// 반환 타입: (string | number)[]
+function firstCharAndSize(input: string) {
+    return [input[0], input.length];
+}
+// firstChar 타입: string | number
+// size 타입: string | number
+const [firstChar, size] = firstCharAndSize("Gudit");
+
+// 타입스크립트에서는 값이 일반적인 배열 타입 대신 좀 더 구체저인 튜플 타입이어야 함을 다음 두 가지 방법으로 나타낸다.
+// 명시적 튜플 타입과 const 어서션을 사용한 방법이다.
+
+// 명시적 튜플 타입
+// 함수에 대한 반환 타입 애너테이션처럼 튜플 타입도 타입 애너테이션에 사용할 수 있다.
+// 함수가 튜플 타입을 반환한다고 선언되고, 배열 리터럴을 반환한다면 해당 배열 리터럴은 일반적인 가변 길이의 배열 대신 튜플로 간주된다.
+
+// 반환 타입: [string, number]
+function firstCharandSizeExplicit(input: string): [string, number] {
+    return [input[0], input.length];
+}
+// firstChar 타입: string
+// size 타입: number
+const [firstChar02, size02] = firstCharandSizeExplicit("Cathay Williams");
+
+// const 어서션
+// 명시적 타입 애너테이션에 튜플 타입을 입력하는 작업은 명시적 타입 애너테이션을 입력할 때와 동일한 이유로 고통스러울 수 있다.
+// 즉, 코드 변경에 따라 작성 및 수정이 필요한 구문을 추가해야 한다.
+
+// 하지만 그 대안으로 타입스크립트는 값 뒤에 넣을 수 있는 const 어서션인 as const 연산자를 제공한다.
+// const 어서션은 타입스크립트에 타입을 유추할 때 읽기 전용이 가능한 값 형식을 사용하도록 지시한다.
+// 다음과 같이 as const가 배치되면 배열이 튜플로 처리되어야 함을 나타낸다.
+
+// 타입: (string | number)[]
+const unionArray = [1157, "Tomoe"];
+
+// 타입: readonly [1157, "Tomoe"]
+const readonlyTuple = [1157, "Tomoe"] as const;
+
+// const 어서션은 유연한 크기의 배열을 고정된 크기의 튜플로 전환하는 것을 넘어서
+// 해당 튜플이 읽기 전용이고 값 수정이 예상되는 곳에서 사용할 수 없음을 나타낸다.
