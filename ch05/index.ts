@@ -104,8 +104,80 @@ function singSongs(songs: string[]) {
     return songs.length;
 }
 
-// 함수에 다른 값을 가진 여러 개의 반환문을 포함하고 있다면, 타입스크립트는 반환타입(return type)을 가능한 모든 반환 타입의 조합으로 유추한다.
+// 함수에 다른 값을 가진 여러 개의 반환문을 포함하고 있다면, 타입스크립트는 반환 타입(return type)을 가능한 모든 반환 타입의 조합으로 유추한다.
 // 다음 코드에서 getSongAt 함수는 string | undefined를 반환하는 것으로 유추된다.
 function getSongAt(songs: string[], index: number) {
     return index < songs.length ? songs[index] : undefined;
 }
+
+// 5.2.1 명시적 반환 타입
+// 변수와 마찬가지로 타입 애너테이션을 사용해 함수의 반환 타입을 명시적으로 선언하지 않는 것이 좋다.
+// 그러나 특히 함수에서 반환 타입을 명시적으로 선언하는 방식이 매우 유용할 경우가 종종 있다.
+// - 가능한 반환값이 많은 함수가 항상 동일한 타입의 값을 반환하도록 강제한다.
+// - 타입스크립트는 재귀 함수의 반환 타입을 통해 타입을 유추하는 것을 거부한다.
+// - 수백 개 이상의 타입스크립트 파일이 있는 매우 큰 프로젝트에서 타입스크립트 타입 검사 속도를 높일 수 있다.
+
+function singSongsRecursive(songs: string[], count = 0): number {
+    return songs.length ? singSongsRecursive(songs.slice(1), count + 1) : count;
+}
+const singSongsRecursive02 = (songs: string[], count = 0): number => {
+    return songs.length ? singSongsRecursive(songs.slice(1), count + 1) : count;
+};
+
+// 함수의 반환문이 함수의 반환 타입으로 할당할 수 없는 값을 반환하는 경우, 타입스크립트는 할당 가능성 오류를 표시한다.
+function getSongRecordingDate(song: string): Date | undefined {
+    switch (song) {
+        case "Strange Fruit":
+            return new Date("April 20, 1939"); // OK
+        case "Greensleeves":
+            return "unknown"; // Error => 'string' 형식은 'Date' 형식에 할당할 수 없다. 반환 값이 Date | undefined 인데 string을 반환하고 있기 때문에 오류가 난다.
+        default:
+            return undefined; // OK
+    }
+}
+
+// ====================================================================================================
+
+// 5.3 함수 타입
+// 자바스크립트에서는 함수를 값으로 전달할 수 있다. 즉, 함수를 가지기 위한 매개변수 또는 변수의 타입을 선언하는 방법이 필요하다.
+// 함수 타입(function type) 구문은 화살표 함수와 유사하지만 함수 본문 대신 타입이 있다.
+// 다음 nothingInGivesString 변수 타입은 매개변수가 없고 string 타입을 반환하는 함수임을 설명한다.
+let nothingInGivesString: () => string;
+
+// 다음 inputAndOutput 변수 타입은 string[] 매개변수와 count 선택적 매개변수 및 number 값을 반환하는 함수임을 설명한다.
+let inputAndOutput: (songs: string[], count?: number) => number;
+// 함수 타입은 콜백 매개변수(함수로 호출되는 매개변수)를 설명하는 데 자주 사용된다.
+
+const songs = ["Juice", "Shake It Off", "What's Up"];
+
+function runOnSongs(getSongAt: (index: number) => string) {
+    for (let i = 0; i < songs.length; i += 1) {
+        console.log(getSongAt(i));
+    }
+}
+function getSongAt02(index: number) {
+    return `${songs[index]}`;
+}
+runOnSongs(getSongAt02); // OK
+
+function logSong(song: string) {
+    return `${song}`;
+}
+runOnSongs(logSong); // Error => (song: string) => string' 형식의 인수는 '(index: number) => string' 형식의 매개 변수에 할당될 수 없다. 'song' 및 'index' 매개 변수의 형식이 호환되지 않는다. 'number' 형식은 'string' 형식에 할당할 수 없다.
+
+// 5.3.2 매개변수 타입 추론
+let singer02: (song: string) => string;
+singer02 = function (song: string) {
+    // song: string의 타입
+    return `Singing: ${song.toUpperCase()}!`;
+};
+
+// 함수를 매개변수로 갖는 함수에 인수로 전달된 함수는 해당 매개변수 타입도 잘 유추할 수 있다.
+const song02 = ["Call Me", "Jolene", "The Chain"];
+// song: string
+// index: number
+song02.forEach((song, index) => {
+    console.log(`${song} is at index at ${index}`);
+});
+
+// 5.4.1 void 반환타입
