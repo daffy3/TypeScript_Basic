@@ -252,3 +252,58 @@ myNovel = {
 // 7.3 인터페이스 확장
 // 타입스크립트는 인터페이스가 다른 인터페이스의 모든 멤버를 복사해서 선언할 수 있는 '확장된(extend)' 인터페이스를 허용한다.
 // 확장할 인터페이스의 이름 뒤에 extends 키워드를 추가해서 다른 인터페이스를 확장한 인터페이스라는 걸 표시한다.
+// 이렇게 하면 파생 인터페이스를 준수하는 모든 객체가 기본 인터페이스의 모든 멤버도 가져야하는 것을 타입스크립트에 알려준다.
+
+// 다음 예제에서 Novella 인터페이스는 Writing을 확장하므로 객체는 최소한 Novella의 pages와 Writing의 title 멤버가 모두 있어야 한다.
+interface Writing02 {
+    title: string;
+}
+
+interface Novella extends Writing02 {
+    pages: number;
+}
+
+// OK
+let myNovella: Novella = {
+    pages: 195,
+    title: "Ethan Frome",
+};
+
+let missingPages: Novella = {
+    title: "The Awakening", // 'pages' 속성이 '{ title: string; }' 형식에 없지만 'Novella' 형식에서 필수이다.
+};
+
+let extraProperty: Novella = {
+    pages: 300,
+    strategy: "baseline", // Error => 개체 리터럴은 알려진 속성만 지정할 수 있으며 'Novella' 형식에 'strategy'이(가) 없다.
+    style: "Naturalism", // Error => 개체 리터럴은 알려진 속성만 지정할 수 있으며 'Novella' 형식에 'strategy'이(가) 없다.
+};
+
+// 인터페이스 확장은 프로젝트의 엔티티 타입이 다른 엔티티의 모든 멤버를 포함하는 상위 집합을 나타내는 실용적인 방법이다.
+// 인터페이스 확장 덕분에 여러 인터페이스에 관계를 나타내기 위해 동일한 코드를 반복 입력하는 작업을 피할 수 있다.
+
+// ====================================================================================================
+
+// 7.4 인터페이스 병합
+// 인터페이스의 중요한 특징 중 하나는 서로 병합하는 능력이다.
+// 두 개의 인터페이스가 동일한 이름으로 동일한 스코프에 선언된 경우, 선언된 모든 필드를 포함하는 더 큰 인터페이스가 코드에 추가된다.
+
+interface Merged {
+    fromFirst: string;
+}
+
+interface Merged {
+    fromSecond: number;
+}
+
+// 다음과 같음
+// interface Merged {
+//     fromFirst: string;
+//     fromSecond: number;
+// }
+
+// 위 코드는 fromFirst와 fromSecond라는 두 개의 속성을 갖는 Merged 인터페이스를 선언한다.
+// 일반적인 타입스크립트 개발에서는 인터페이스 병합을 자주 사용하지는 않는다.
+// 인터페이스가 여러 곳에 선언되면 코드를 이해하기가 어려워지므로 가능하면 인터페이스 병합을 사용하지 않는 것이 좋다.
+
+// 7.4.1 이름이
